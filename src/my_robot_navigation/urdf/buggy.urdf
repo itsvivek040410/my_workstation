@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<robot name="simple_robot">
+  <!-- Base Link -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.5 0.5 0.1"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+  </link>
+
+  <!-- LiDAR Sensor -->
+  <link name="lidar_link">
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.05"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+
+  <joint name="base_to_lidar" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo>
+    <plugin name="gazebo_ros_laser_controller" filename="libgazebo_ros_laser.so">
+      <robotNamespace>/</robotNamespace>
+      <frameName>lidar_link</frameName>
+      <topicName>scan</topicName>
+      <gaussianNoise>0.01</gaussianNoise>
+      <updateRate>40.0</updateRate>
+    </plugin>
+  </gazebo>
+</robot>

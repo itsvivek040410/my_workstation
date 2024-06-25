@@ -1,0 +1,29 @@
+<launch>
+  <!-- Launch Gazebo with the wall maze world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find my_robot_navigation)/worlds/my_worlds.world"/>
+  </include>
+
+  <!-- Spawn the buggy in Gazebo -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model buggy -x 0 -y 0 -z 0.1" />
+
+  <!-- Robot state publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" args="$(find my_robot_navigation)/urdf/buggy.urdf" />
+
+  <!-- AMCL for localization -->
+  <node name="amcl" pkg="amcl" type="amcl">
+    <param name="odom_frame_id" value="odom" />
+    <param name="base_frame_id" value="base_link" />
+    <param name="global_frame_id" value="map" />
+    <param name="scan_topic" value="scan" />
+  </node>
+
+  <!-- Map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find my_robot_navigation)/maps/map.yaml" />
+
+  <!-- Move base node -->
+  <node name="move_base" pkg="move_base" type="move_base" />
+
+  <!-- RViz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find my_robot_navigation)/rviz/navigation.rviz"/>
+</launch>
